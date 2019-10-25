@@ -17,36 +17,38 @@ func _process(delta):
 [sub_resource type="GDScript" id=2]
 script/source = "extends Node2D
 
-
+onready var player = get_parent().get_node(\"Player\")
 
 
 func _ready():
 	pass # Replace with function body.
 	
 var time              = 0
-var time_to_spawn     = 5
+var time_to_spawn     = 4
 var max_distance      = 550
 var min_distance      = 100
+var number_of_plastic = 0
+var max_plastic       = 5
+onready var plastic_list = [load( \"res://Scenes/Plastic.tscn\" )] 
 
-func spawn():
+func spawn_plastic():
 	if time < time_to_spawn : return
+	if number_of_plastic > max_plastic : return
 	time = 0
 	
-	var player = get_parent().get_node(\"Player\")
-	
-	var around = Vector2( randf() - 1 + randf(), randf() - 1 + randf())
-	var distance = randi()%max_distance + min_distance
-	
+	var around           = Vector2( randf() - 1 + randf(), randf() - 1 + randf())
+	var distance         = randi()%max_distance + min_distance
 	var plastic_position = around * distance + player.position
 	
-	var plastic = load( \"res://Scenes/Plastic.tscn\" )
-	plastic = plastic.instance()
+	var plastic      = plastic_list[ randi()%len(plastic_list) ]
+	plastic          = plastic.instance()
 	plastic.position = plastic_position
 	get_parent().add_child(plastic)
+	number_of_plastic += 1
 
 func _process(delta):
 	time += delta
-	spawn()
+	spawn_plastic()
 	
 	"
 
