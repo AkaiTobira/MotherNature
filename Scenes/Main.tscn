@@ -22,6 +22,7 @@ func _ready():
 script = SubResource( 1 )
 
 [node name="KinematicBody2D" parent="." instance=ExtResource( 1 )]
+position = Vector2( 789, 372 )
 z_index = 1
 
 [node name="Backgourn" type="Sprite" parent="."]

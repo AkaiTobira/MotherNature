@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Backgourn.png-b404300127abf02b39b53a07392d06d8.stex"
+path="res://.import/Backgourn.png-0b575499484284ae1c3cd2ba99d19328.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://MotherNature/Graphics/Backgourn.png"
-dest_files=[ "res://.import/Backgourn.png-b404300127abf02b39b53a07392d06d8.stex" ]
+source_file="res://Graphics/Backgourn.png"
+dest_files=[ "res://.import/Backgourn.png-0b575499484284ae1c3cd2ba99d19328.stex" ]
 
 [params]
 

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Oil.png-c6f825b5c3d6fbabed742631e455971b.stex"
+path="res://.import/Oil.png-397aff2ed81637772e51b34438a91a41.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://MotherNature/Graphics/Oil.png"
-dest_files=[ "res://.import/Oil.png-c6f825b5c3d6fbabed742631e455971b.stex" ]
+source_file="res://Graphics/Oil.png"
+dest_files=[ "res://.import/Oil.png-397aff2ed81637772e51b34438a91a41.stex" ]
 
 [params]
 
