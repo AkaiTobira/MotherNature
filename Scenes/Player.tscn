@@ -40,7 +40,6 @@ func _input(event):
 		if energy < boost_cost: return
 		
 		target_point = get_viewport().get_mouse_position()
-		
 		energy    -=  boost_cost 
 		
 		speed       = speed_max
@@ -53,7 +52,7 @@ func move_character(delta):
 	
 	if(Input.is_mouse_button_pressed(BUTTON_LEFT) and not boost_bonus):
 		speed = min( speed_incease*delta + speed, speed_max)
-	else: speed = max( speed - speed_incease*delta, 0 ) 
+	else: speed = max( speed - 2*speed_incease*delta, 0 ) 
 	var velocity = delta * direction * ( speed + boost_bonus )
 	
 	if not boost_bonus: pass

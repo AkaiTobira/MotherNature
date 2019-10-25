@@ -7,12 +7,48 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
 
+var timer                      = 0
+var TIME_TO_DANGEROUS_FAZE     = 10
+var TIME_TO_ENF_DANGEROUS_FAZE = 5
+var safe_faze                  = true
+var number_of_faze             = 1
+
 func _ready():
 	pass # Replace with function body.
 
+func time_to_string():
+	if safe_faze :
+		return str( int((TIME_TO_DANGEROUS_FAZE - timer)/60) ) + \":\" + str(int((TIME_TO_DANGEROUS_FAZE-timer))%60)
+	else :
+		return str( int((TIME_TO_ENF_DANGEROUS_FAZE - timer)/60) ) + \":\" + str(int((TIME_TO_ENF_DANGEROUS_FAZE-timer))%60)
+
+func handle_safe_faze():
+	$GUI/Advice.print_text(\"MICROBS AUTOFAGED THEMSELFS, STAY SAFE\", null)
+
+	if timer > TIME_TO_DANGEROUS_FAZE:
+		safe_faze = false 
+		$Spawner.spawn_enemy( number_of_faze + 2)
+		number_of_faze         +=1
+		TIME_TO_DANGEROUS_FAZE += 10
+		timer                   = 0
+
+func handle_dangerous_faze():
+	$GUI/Advice.print_text(\"LOOK OUT !!! TOXIC PLASTIC MICROBS HAS BEEN SPAWN\", null)
+
+	if timer > TIME_TO_ENF_DANGEROUS_FAZE:
+		safe_faze = true 
+		TIME_TO_ENF_DANGEROUS_FAZE += 4
+		timer  = 0
+
 func _process(delta):
+	timer += delta
+	
 	$GUI/Hp.value     = $Player.hp
-	$GUI/Energy.value = $Player.energy"
+	$GUI/Energy.value = $Player.energy
+	$GUI/Timer.text   = time_to_string()
+	
+	if safe_faze : handle_safe_faze()
+	else : handle_dangerous_faze()"
 
 [sub_resource type="GDScript" id=2]
 script/source = "extends Node2D
@@ -30,6 +66,7 @@ var min_distance      = 100
 var number_of_plastic = 0
 var max_plastic       = 5
 onready var plastic_list = [load( \"res://Scenes/Plastic.tscn\" )] 
+onready var enemy_list   = [load( \"res://Scenes/Enemy.tscn\" )] 
 
 func spawn_plastic():
 	if time < time_to_spawn : return
@@ -45,6 +82,17 @@ func spawn_plastic():
 	plastic.position = plastic_position
 	get_parent().add_child(plastic)
 	number_of_plastic += 1
+
+func spawn_enemy(number_of_enemy):
+	for i in range( number_of_enemy ):
+		var around           = Vector2( randf() - 1 + randf(), randf() - 1 + randf())
+		var distance         = 600
+		var plastic_position = around * distance + player.position
+		
+		var plastic      = enemy_list[ randi()%len(plastic_list) ]
+		plastic          = plastic.instance()
+		plastic.position = plastic_position
+		get_parent().add_child(plastic)
 
 func _process(delta):
 	time += delta

@@ -1,7 +1,31 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Graphics/Hp_under.png" type="Texture" id=1]
 [ext_resource path="res://Graphics/Hp_current.png" type="Texture" id=2]
+[ext_resource path="res://Font/19Font.tres" type="DynamicFont" id=3]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends RichTextLabel
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+var timer = 0
+var time_of_avaible = 7
+func _process(delta):
+	timer += delta
+	if timer > time_of_avaible: visible = false
+
+func print_text( new_text, color ):
+	visible = true
+	timer   = 0
+	text    = new_text
+"
 
 [node name="GUi" type="CanvasLayer"]
 
@@ -22,3 +46,20 @@ margin_bottom = 94.4826
 value = 100.0
 texture_under = ExtResource( 1 )
 texture_progress = ExtResource( 2 )
+
+[node name="Timer" type="RichTextLabel" parent="."]
+margin_left = 133.723
+margin_top = 105.103
+margin_right = 309.723
+margin_bottom = 174.103
+custom_fonts/normal_font = ExtResource( 3 )
+tab_size = 20
+
+[node name="Advice" type="RichTextLabel" parent="."]
+margin_left = 349.0
+margin_top = 20.0
+margin_right = 1168.0
+margin_bottom = 174.0
+custom_fonts/normal_font = ExtResource( 3 )
+tab_size = 20
+script = SubResource( 1 )
