@@ -67,25 +67,11 @@ func rotate_character(delta):
 	#print( angle_diff) 
 	$Player.rotation_degrees = rad2deg(angle)#$Player.rotation_degrees + rad2deg(angle_diff)
 	#print( angle )
-	
-	
-	pass
 
 
 func _physics_process(delta):
 	move_character(delta)
 	rotate_character(delta)
-	
-	
-	#var angle = global_position.angle_to_point(get_global_mouse_position())
-	#normal = normal.rotated( angle - deg2rad( $Player.rotation_degrees ) * delta )
-	#var angle_diff = (rad2deg(angle) - $Player.rotation_degrees) * delta
-	#$Player.rotation_degrees += angle_diff 
-	
-	#rotation = get_global_mouse_position().angle_to_point(position)
-	
-	
-	#print(rad2deg(angle))
 	
 "
 
@@ -95,7 +81,9 @@ radius = 113.687
 [node name="KinematicBody2D" type="KinematicBody2D"]
 script = SubResource( 1 )
 
-[node name="Player" type="Sprite" parent="."]
+[node name="Player" type="Sprite" parent="." groups=[
+"player",
+]]
 scale = Vector2( 0.2, 0.2 )
 texture = ExtResource( 1 )
 
