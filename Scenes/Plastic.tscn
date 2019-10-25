@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Graphics/plastic.png" type="Texture" id=1]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="plastic" type="Sprite" parent="."]
+position = Vector2( 2.52773, 0.679359 )
+scale = Vector2( 0.085146, 0.0779094 )
+texture = ExtResource( 1 )
