@@ -8,29 +8,25 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = \"text\"
-
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 
-"
+func _process(delta):
+	$GUI/Hp.value     = $Player.hp
+	$GUI/Energy.value = $Player.energy"
 
 [node name="Main" type="Node2D"]
 script = SubResource( 1 )
 
-[node name="KinematicBody2D" parent="." instance=ExtResource( 1 )]
+[node name="Player" parent="." instance=ExtResource( 1 )]
 position = Vector2( 789, 372 )
 z_index = 1
 
 [node name="Backgourn" type="Sprite" parent="."]
-position = Vector2( 522.278, 302 )
-scale = Vector2( 0.538502, 0.563734 )
+position = Vector2( 862.669, 433.235 )
 texture = ExtResource( 2 )
 
-[node name="CanvasLayer" parent="." instance=ExtResource( 3 )]
+[node name="GUI" parent="." instance=ExtResource( 3 )]
 
 [node name="Node2D" parent="." instance=ExtResource( 4 )]
 position = Vector2( 229.045, 123.716 )

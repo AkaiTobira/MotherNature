@@ -3,24 +3,22 @@
 [ext_resource path="res://Graphics/Hp_under.png" type="Texture" id=1]
 [ext_resource path="res://Graphics/Hp_current.png" type="Texture" id=2]
 
-[node name="CanvasLayer" type="CanvasLayer"]
+[node name="GUi" type="CanvasLayer"]
 
 [node name="Hp" type="TextureProgress" parent="."]
 margin_left = 11.2927
 margin_top = 10.4356
 margin_right = 311.293
 margin_bottom = 48.4356
-rect_scale = Vector2( 0.5, 0.5 )
 value = 100.0
 texture_under = ExtResource( 1 )
 texture_progress = ExtResource( 2 )
 
 [node name="Energy" type="TextureProgress" parent="."]
 margin_left = 10.9896
-margin_top = 33.4826
+margin_top = 56.4826
 margin_right = 310.99
-margin_bottom = 71.4826
-rect_scale = Vector2( 0.5, 0.5 )
+margin_bottom = 94.4826
 value = 100.0
 texture_under = ExtResource( 1 )
 texture_progress = ExtResource( 2 )

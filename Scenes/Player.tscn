@@ -8,44 +8,86 @@ script/source = "extends KinematicBody2D
 var energy = 100.0
 var hp     = 100.0
 
-var direction = Vector2(0,0)
+var direction    = Vector2(0,0)
 
+var target_point = position
+var speed         = 0
+var speed_incease = 25
+var speed_max     = 150
+
+var boost_bonus = 0
+var boost_cost  = 25
+var boost_max   = 350
+
+var lock_move   = 0
 
 func _ready():
 	pass # Replace with function body.
 
 func update_hp(delta):
 	hp -= 1 * delta 
-	#$Camera2D/Hp.value = hp
 
 func _process(delta):
 	update_hp(delta)
-	pass
 
 func _input(event):
-
-	if(Input.is_mouse_button_pressed(BUTTON_LEFT)):
+	if(Input.is_mouse_button_pressed(BUTTON_LEFT) and not boost_bonus):
+		target_point = get_viewport().get_mouse_position()
 		var origin_position = get_global_transform_with_canvas().origin
-		#print( get_viewport().get_mouse_position(), \" \", position, \" \", get_global_transform_with_canvas().origin )
-		direction = get_viewport().get_mouse_position()  - origin_position
-   # Mouse in viewport coordinates
-#	if event is InputEventMouseButton:
-		
+		direction = (target_point  - origin_position).normalized()
 	
-#		print(\"Mouse Click/Unclick at: \", event.position)
-#   elif event is InputEventMouseMotion:
-#       print(\"Mouse Motion at: \", event.position)
+	if(Input.is_mouse_button_pressed(BUTTON_RIGHT) and not boost_bonus):
+		if energy < boost_cost: return
+		
+		target_point = get_viewport().get_mouse_position()
+		
+		energy    -=  boost_cost 
+		
+		speed       = speed_max
+		boost_bonus = boost_max
+		var origin_position = get_global_transform_with_canvas().origin
+		direction = (target_point  - origin_position).normalized()
+
+func move_character(delta):
+	boost_bonus = max( boost_bonus- speed_max*delta, 0 )
+	
+	if(Input.is_mouse_button_pressed(BUTTON_LEFT) and not boost_bonus):
+		speed = min( speed_incease*delta + speed, speed_max)
+	else: speed = max( speed - speed_incease*delta, 0 ) 
+	var velocity = delta * direction * ( speed + boost_bonus )
+	
+	if not boost_bonus: pass
+	else: target_point = get_global_transform_with_canvas().origin
+	position += velocity
+
+func rotate_character(delta):
+	
+	var angle      = get_global_transform_with_canvas().origin.angle_to_point(target_point)
+	var angle_diff = ( angle - deg2rad($Player.rotation_degrees) ) * delta
+	#print( angle_diff) 
+	$Player.rotation_degrees = rad2deg(angle)#$Player.rotation_degrees + rad2deg(angle_diff)
+	#print( angle )
+	
+	
 	pass
 
 
 func _physics_process(delta):
+	move_character(delta)
+	rotate_character(delta)
 	
-	#if Input.is_key_pressed( \"Move\"  ):
-	#	print( direction )
-	#	direction = get_viewport().get_mouse_position() - position 
-
-	position += delta * direction
-	pass"
+	
+	#var angle = global_position.angle_to_point(get_global_mouse_position())
+	#normal = normal.rotated( angle - deg2rad( $Player.rotation_degrees ) * delta )
+	#var angle_diff = (rad2deg(angle) - $Player.rotation_degrees) * delta
+	#$Player.rotation_degrees += angle_diff 
+	
+	#rotation = get_global_mouse_position().angle_to_point(position)
+	
+	
+	#print(rad2deg(angle))
+	
+"
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 113.687
