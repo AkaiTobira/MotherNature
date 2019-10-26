@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://Graphics/p_idle_0.png" type="Texture" id=1]
+[ext_resource path="res://Graphics/przeciwnik/NieWiem.png" type="Texture" id=1]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends KinematicBody2D
@@ -47,8 +47,14 @@ func _on_Radar_body_entered(body):
 	print( body )
 	if body.is_in_group(\"player\"):
 		shoot()
-		call_deferred(\"queue_free\")
+		$AnimationPlayer.play(\"Dead\")
 
+
+
+func _on_AnimationPlayer_animation_finished(anim_name):
+	if anim_name == \"Dead\":
+		call_deferred(\"queue_free\")
+	pass # Replace with function body.
 "
 
 [sub_resource type="CircleShape2D" id=2]
@@ -56,6 +62,50 @@ radius = 60.0987
 
 [sub_resource type="CircleShape2D" id=3]
 radius = 127.468
+
+[sub_resource type="Animation" id=5]
+resource_name = "Dead"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 2, 3, 4, 5 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.5 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "Idle"
+length = 0.5
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 2, 1, 2, 1 ]
+}
 
 [node name="EnemyTemplate" type="KinematicBody2D" groups=[
 "enemy",
@@ -69,13 +119,24 @@ script = SubResource( 1 )
 shape = SubResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
+position = Vector2( -1.47513, 5.19797 )
+scale = Vector2( 0.334982, 0.274124 )
 texture = ExtResource( 1 )
+hframes = 6
+frame = 1
 
 [node name="Radar" type="Area2D" parent="."]
 collision_layer = 2
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Radar"]
-position = Vector2( 1.05267, -4.21053 )
+position = Vector2( 1.05267, -3.35315 )
 shape = SubResource( 3 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "Idle"
+playback_speed = 3.81
+anims/Dead = SubResource( 5 )
+anims/Idle = SubResource( 4 )
 [connection signal="body_entered" from="Radar" to="." method="_on_Radar_body_entered"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]

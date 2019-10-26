@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Graphics/Backgourn2.png" type="Texture" id=2]
@@ -7,8 +7,10 @@
 [ext_resource path="res://Graphics/Backgourn5.png" type="Texture" id=5]
 [ext_resource path="res://Graphics/Backgourn4.png" type="Texture" id=6]
 [ext_resource path="res://Scenes/GUI.tscn" type="PackedScene" id=7]
-[ext_resource path="res://Scenes/Rock.tscn" type="PackedScene" id=8]
-[ext_resource path="res://Scenes/Kapsel.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Graphics/Backgourn6.png" type="Texture" id=8]
+[ext_resource path="res://Graphics/tlo/Bez nazwy.png" type="Texture" id=9]
+[ext_resource path="res://Scenes/Rock.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Scenes/Rock_experimental.tscn" type="PackedScene" id=11]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
@@ -31,35 +33,62 @@ func time_to_string():
 func handle_safe_faze():
 
 	if timer > TIME_TO_DANGEROUS_FAZE:
-		$GUI/Advice.print_text(\"LOOK OUT !!! TOXIC PLASTIC MICROBS HAS BEEN SPAWN\", null)
+		$GUI/Advice.print_text(\"LOOK OUT !!! TOXIC PLASTIC MICROBES HAS BEEN APPEARED\", null)
 		safe_faze = false 
-		$Spawner.spawn_enemy( number_of_faze + 2)
+		spawn_second_time = true
+		$Spawner.spawn_enemy( number_of_faze * 4)
 		$Spawner.spawn_oil()
-		number_of_faze         +=1
+		number_of_faze         += 1
 		TIME_TO_DANGEROUS_FAZE += 2
 		timer                   = 0
 
+var spawn_second_time = true
 func handle_dangerous_faze():
+	
+	if timer > TIME_TO_DANGEROUS_FAZE/2 and spawn_second_time:
+		spawn_second_time = false
+		$Spawner.spawn_enemy( number_of_faze * 2)
+	
+	
 	if timer > TIME_TO_ENF_DANGEROUS_FAZE:
-		$GUI/Advice.print_text(\"MICROBS AUTOFAGED THEMSELFS, STAY SAFE\", null)
+		$GUI/Advice.print_text(\"MICROBES AUTOFAGED THEMSELFS, KEEP IT UP\", null)
 		safe_faze = true 
 		TIME_TO_ENF_DANGEROUS_FAZE += 3
 		timer  = 0
 
+var end_value = 0
 func _process(delta):
 	timer += delta
 	
 	$GUI/Hp.value     = $Player.hp
 	$GUI/Energy.value = $Player.energy
-	$GUI/Timer.text   = time_to_string()
+	$GUI/Timer.text   =  \"Time left : \" + time_to_string()
 	$GUI/Score.text   = \"SCORE: \" + str(int($Player.score))
 	$GUI/Fala.text    = \"Prepare to next wave\" if safe_faze else \"WAVE \" + str( number_of_faze )
 	$DangerWorld.visible = not safe_faze
 	
-	if $Player.position.x < -2000 : $Player.position.x = -2000
-	if $Player.position.x > 3500 : $Player.position.x = 3500
+	if $Player.position.x < -1660 : $Player.position.x = -1660
+	if $Player.position.x > 3290 : $Player.position.x = 3290
 	if $Player.position.y > 2600 : $Player.position.y = 2600
+	if $Player.position.y < -1660 : $Player.position.y = -1660
 	
+	if $Player.score > 1000:
+		if Input.is_action_just_released(\"ui_accept\"): 
+			get_tree().change_scene(\"res://Scenes/Intro.tscn\")
+		end_value = min( end_value + delta, 1 )
+		$Player.hp    = 100
+		$Player.speed = 0
+		$GUI/Backgourn7.modulate = Color( 1,1,1, end_value  )
+	
+	
+	if $Player.hp <= 0: 
+		if Input.is_action_just_released(\"ui_accept\"): 
+			get_tree().change_scene(\"res://Scenes/Intro.tscn\")
+		end_value = min( end_value + delta, 1 )
+		$Player.speed = 0
+		$GUI/Backgourn6.modulate = Color( 1,1,1, end_value  )
+	
+
 	if safe_faze : handle_safe_faze()
 	else : handle_dangerous_faze()"
 
@@ -76,10 +105,10 @@ func _ready():
 
 onready var player = get_parent().get_node(\"Player\")
 
-var first  = 100
-var second = 200
-var third  = 300
-var fourth = 400
+var first  = 250
+var second = 450
+var third  = 650
+var fourth = 850
 
 
 func _process(delta):
@@ -99,11 +128,6 @@ func _process(delta):
 	else:
 		var score =  min( player.score, 100 )
 		$Backgourn.modulate = Color(1, 1, 1, (100 - score)/100.0) 
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
 "
 
 [sub_resource type="GDScript" id=3]
@@ -113,14 +137,15 @@ onready var player = get_parent().get_node(\"Player\")
 
 func _ready():
 	spawn_rock()
+	#spawn_plastic()
 	pass # Replace with function body.
 	
 var time              = 0
 var time_to_spawn     = 2
-var max_distance      = 550
-var min_distance      = 200
+var max_distance      = 1000
+var min_distance      = 400
 var number_of_plastic = 0
-var max_plastic       = 30
+var max_plastic       = 500
 onready var plastic_list = [load( \"res://Scenes/Plastic.tscn\" ),load( \"res://Scenes/Plastic4.tscn\" ),load( \"res://Scenes/Plastic3.tscn\" ),load( \"res://Scenes/Organic.tscn\" ), load( \"res://Scenes/Plastic2.tscn\" )]
 onready var enemy_list   = [load( \"res://Scenes/Enemy-Shooter.tscn\" ),load( \"res://Scenes/Enemy-Chaser.tscn\" ), load( \"res://Scenes/Enemy-Shooter2.tscn\" )] 
 onready var rock_list    = [load( \"res://Scenes/Rock.tscn\"  )]
@@ -137,7 +162,7 @@ func get_vector_around():
 func spawn_oil():
 	for i in range(10):
 		var around           = get_vector_around()
-		var distance         = randi()%600
+		var distance         = randi()%1000 + 300
 		var plastic_position = around * distance + player.position
 			
 		var plastic      = oil_list[ randi()%len(oil_list) ]
@@ -146,9 +171,9 @@ func spawn_oil():
 		get_parent().call_deferred(\"add_child\", plastic)
 
 func spawn_rock():
-	for i in range(10):
+	for i in range(200):
 		var around           = get_vector_around()
-		var distance         = randi()%1000 + 2000
+		var distance         = randi()%1000 + 1500
 		var plastic_position = around * distance + player.position
 			
 		var plastic      = rock_list[ randi()%len(rock_list) ]
@@ -160,7 +185,7 @@ func spawn_plastic():
 	if time < time_to_spawn : return
 	if number_of_plastic > max_plastic : return
 	time = 0
-	for i in range(2):
+	for i in range(6):
 		var around           = get_vector_around()
 		
 		var distance         = randi()%max_distance + min_distance
@@ -196,6 +221,7 @@ script = SubResource( 1 )
 position = Vector2( 789, 372 )
 
 [node name="Background_Swapper" type="Node2D" parent="."]
+editor/display_folded = true
 position = Vector2( 862.669, 433.235 )
 script = SubResource( 2 )
 
@@ -224,36 +250,51 @@ scale = Vector2( 6.01638, 8.28446 )
 texture = ExtResource( 5 )
 
 [node name="Backgourn" type="Sprite" parent="Background_Swapper"]
-position = Vector2( -114.684, 241.69 )
-scale = Vector2( 7.25838, 10.329 )
+position = Vector2( -224.126, 36.4852 )
+scale = Vector2( 4.98535, 6.27667 )
 texture = ExtResource( 6 )
 
 [node name="GUI" parent="." instance=ExtResource( 7 )]
 
+[node name="Backgourn6" type="Sprite" parent="GUI"]
+modulate = Color( 1, 1, 1, 0 )
+position = Vector2( 506.472, 348.853 )
+scale = Vector2( 0.253184, 0.24 )
+texture = ExtResource( 8 )
+
+[node name="Backgourn7" type="Sprite" parent="GUI"]
+modulate = Color( 1, 1, 1, 0 )
+position = Vector2( 518.267, 302.495 )
+scale = Vector2( 0.7, 0.7 )
+texture = ExtResource( 9 )
+
 [node name="Spawner" type="Node2D" parent="."]
 script = SubResource( 3 )
 
-[node name="Rock_Template3" parent="." instance=ExtResource( 8 )]
+[node name="Rock_Template3" parent="." instance=ExtResource( 10 )]
 position = Vector2( 3874.4, 1098.35 )
 rotation = 1.5708
 scale = Vector2( 30, 3.77 )
 
-[node name="Rock_Template4" parent="." instance=ExtResource( 8 )]
+[node name="Rock_Template4" parent="." instance=ExtResource( 10 )]
 position = Vector2( -2290.1, 1168.75 )
 rotation = 1.5708
 scale = Vector2( 30, 3.77 )
 
-[node name="Rock_Template2" parent="." instance=ExtResource( 8 )]
+[node name="Rock_Template2" parent="." instance=ExtResource( 10 )]
 position = Vector2( 676.503, 3220.23 )
 scale = Vector2( 30, 3.77 )
 
+[node name="Rock_Template5" parent="." instance=ExtResource( 10 )]
+position = Vector2( 425.034, -2235.66 )
+scale = Vector2( 30, 3.77 )
+
 [node name="DangerWorld" type="Sprite" parent="."]
-visible = false
 modulate = Color( 1, 0.0470588, 0.0196078, 0.282353 )
-position = Vector2( 752.534, 789.495 )
-scale = Vector2( 5.934, 8.33219 )
+position = Vector2( 736.336, 717.944 )
+scale = Vector2( 8.17174, 13.4776 )
 z_index = 20
 texture = ExtResource( 4 )
 
-[node name="Rock_Template" parent="." instance=ExtResource( 9 )]
-position = Vector2( 597.686, 307.989 )
+[node name="Rock_Template" parent="." instance=ExtResource( 11 )]
+position = Vector2( 499.749, 252.885 )

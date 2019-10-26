@@ -34,12 +34,13 @@ func _process(delta):
 		$Oil.modulate = Color( 1,1,1, alpha_scale )
 		if alpha_scale == 0: call_deferred(\"queue_free\")
 	for body in l:
-		body.speed = 10
+		if not body[1]: body[0].speed = 10
+		body[1] = true
 
 func _on_Area2D_body_entered(body):
 	if body.is_in_group(\"player\") or body.is_in_group(\"enemy\"):
 		if not body.is_in_group(\"misle\"):
-			l.append(body)
+			l.append([ body, false ])
 
 
 	pass # Replace with function body.

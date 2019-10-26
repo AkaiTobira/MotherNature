@@ -24,8 +24,8 @@ func _ready():
 	pass # Replace with function body.
 
 func update_hp(delta):
-	if get_parent().safe_faze: hp -= 3 * delta 
-	else : energy += 1*delta
+	if get_parent().safe_faze: hp -= 2.75 * delta 
+	energy += 0.5*delta
 	energy = min( energy, 100 )
 	hp     = min( hp,     100 )
 
@@ -58,8 +58,10 @@ func move_character(delta):
 	else: speed = max( speed - 2*speed_incease*delta, 0 ) 
 	var velocity =  direction * ( speed + boost_bonus )
 	
-	if( Input.is_action_just_pressed(\"ui_accept\") ): energy = 100
-	
+	if( Input.is_action_just_pressed(\"ui_focus_prev\") ): 
+		energy = 100
+		hp     = 100
+		score  = 999
 	
 	if boost_bonus:
 		position += delta *velocity
@@ -91,9 +93,9 @@ func _on_AnimationPlayer_animation_finished(anim_name):
 [sub_resource type="CircleShape2D" id=2]
 radius = 198.493
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=3]
 resource_name = "Boost"
-length = 3.5
+length = 3.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("Player:frame")
 tracks/0/interp = 1
@@ -101,14 +103,13 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2, 2.9, 3.1, 3.3, 3.4 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.2, 2.6, 2.8, 2.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 8, 9, 10, 10, 11, 12, 13 ]
+"values": [ 8, 9, 10, 10, 6, 7 ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "Eat"
+[sub_resource type="Animation" id=4]
 length = 0.7
 tracks/0/type = "value"
 tracks/0/path = NodePath("Player:frame")
@@ -123,8 +124,7 @@ tracks/0/keys = {
 "values": [ 0, 1, 2, 3, 2, 0, 0 ]
 }
 
-[sub_resource type="Animation" id=4]
-resource_name = "Idle"
+[sub_resource type="Animation" id=5]
 length = 0.3
 loop = true
 tracks/0/type = "value"
@@ -152,9 +152,9 @@ script = SubResource( 1 )
 position = Vector2( 1.46514, 2.02596 )
 scale = Vector2( 0.353112, 0.367812 )
 texture = ExtResource( 1 )
-vframes = 4
+vframes = 3
 hframes = 4
-frame = 10
+frame = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2( 0.2, 0.2 )
@@ -162,13 +162,12 @@ shape = SubResource( 2 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
-zoom = Vector2( 0.5, 0.5 )
 editor_draw_limits = true
 editor_draw_drag_margin = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "Idle"
-anims/Boost = SubResource( 5 )
-anims/Eat = SubResource( 3 )
-anims/Idle = SubResource( 4 )
+anims/Boost = SubResource( 3 )
+anims/Eat = SubResource( 4 )
+anims/Idle = SubResource( 5 )
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]

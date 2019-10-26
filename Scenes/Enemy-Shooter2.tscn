@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://Graphics/przeciwnik/en_02.png" type="Texture" id=1]
+[ext_resource path="res://Graphics/przeciwnik/Rotatka.png" type="Texture" id=1]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends KinematicBody2D
@@ -29,10 +29,10 @@ func _process(delta):
 	if dead_by_timer:
 		timer += delta
 		if timer > LIFE_TIME:
-			_on_dead()
+			$AnimationPlayer.play(\"Dead\")
 	else:
 		if get_parent().safe_faze:
-			_on_dead()
+			$AnimationPlayer.play(\"Dead\")
 
 func shoot(body):
 	cooldown = 0
@@ -56,7 +56,12 @@ func _on_dead():
 
 func _on_Area2D_body_entered(body):
 	if body.is_in_group(\"eatable\"):
-		_on_dead()
+		$AnimationPlayer.play(\"Dead\")
+	pass # Replace with function body.
+
+
+func _on_AnimationPlayer_animation_finished(anim_name):
+	if anim_name == \"Dead\": _on_dead()
 	pass # Replace with function body.
 "
 
@@ -68,6 +73,38 @@ radius = 238.137
 
 [sub_resource type="CircleShape2D" id=4]
 radius = 47.2831
+
+[sub_resource type="Animation" id=6]
+resource_name = "Dead"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 4, 5, 6, 7, 7, 7, 7, 7, 7 ]
+}
+
+[sub_resource type="Animation" id=5]
+resource_name = "Idle"
+length = 0.5
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3 ]
+}
 
 [node name="EnemyTemplate" type="KinematicBody2D" groups=[
 "enemy",
@@ -81,10 +118,10 @@ script = SubResource( 1 )
 shape = SubResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
-position = Vector2( -5.154, 3.86712 )
-rotation = 1.52367
-scale = Vector2( 0.727441, 0.665274 )
+position = Vector2( 9, 1 )
 texture = ExtResource( 1 )
+hframes = 8
+frame = 3
 
 [node name="Radar" type="Area2D" parent="."]
 collision_layer = 2
@@ -99,5 +136,11 @@ shape = SubResource( 3 )
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Area2D"]
 position = Vector2( 0, 24 )
 shape = SubResource( 4 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "Idle"
+anims/Dead = SubResource( 6 )
+anims/Idle = SubResource( 5 )
 [connection signal="body_entered" from="Radar" to="." method="_on_Radar_body_entered"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
