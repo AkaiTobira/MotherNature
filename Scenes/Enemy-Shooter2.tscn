@@ -11,6 +11,7 @@ var timer         = 0
 var LIFE_TIME     = 15
 var cooldown       = 0
 var cooldown_timer = 2
+var speed          = 100
 
 var follow         = false
 
@@ -23,7 +24,7 @@ func _process(delta):
 	cooldown += delta
 	if cooldown_timer < cooldown : shoot( player )
 
-	move_and_slide( (player.position - position).normalized() * 100 )
+	move_and_slide( (player.position - position).normalized() * speed )
 
 	if dead_by_timer:
 		timer += delta
@@ -66,6 +67,8 @@ radius = 47.2831
 "enemy",
 ]]
 z_index = 1
+collision_layer = 9
+collision_mask = 9
 script = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

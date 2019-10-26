@@ -50,6 +50,7 @@ func _process(delta):
 	$GUI/Energy.value = $Player.energy
 	$GUI/Timer.text   = time_to_string()
 	$GUI/Score.text   = \"SCORE: \" + str(int($Player.score))
+	$GUI/Fala.text    = \"Prepare to next wave\" if safe_faze else \"WAVE \" + str( number_of_faze )
 	$DangerWorld.visible = not safe_faze
 	
 	if $Player.position.x < -2000 : $Player.position.x = -2000
@@ -123,7 +124,7 @@ var max_plastic       = 30
 onready var plastic_list = [load( \"res://Scenes/Plastic.tscn\" ),load( \"res://Scenes/Plastic4.tscn\" ),load( \"res://Scenes/Plastic3.tscn\" ),load( \"res://Scenes/Organic.tscn\" ), load( \"res://Scenes/Plastic2.tscn\" )]
 onready var enemy_list   = [load( \"res://Scenes/Enemy-Shooter.tscn\" ),load( \"res://Scenes/Enemy-Chaser.tscn\" ), load( \"res://Scenes/Enemy-Shooter2.tscn\" )] 
 onready var rock_list    = [load( \"res://Scenes/Rock.tscn\"  )]
-onready var oil_list     = [load( \"res://Scenes/Oil.tscn\"  )]
+onready var oil_list     = [load( \"res://Scenes/Oil2.tscn\"  ),load( \"res://Scenes/Oil.tscn\"  )]
 
 
 

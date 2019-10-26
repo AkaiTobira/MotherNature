@@ -12,6 +12,7 @@ var LIFE_TIME     = 15
 var cooldown       = 0
 var cooldown_timer = 2
 var direction      = Vector2(0,0)
+var speed          = 150
 
 var boost = 0
 
@@ -29,9 +30,9 @@ func _process(delta):
 	
 	if ! boost:
 		direction = (player.position - position).normalized()
-		move_and_slide( direction * 150 )
+		move_and_slide( direction * speed )
 	else:
-		move_and_slide( direction * ( 150 + boost) )
+		move_and_slide( direction * ( speed + boost) )
 		boost = max( 0, boost - boost*delta/2)
 
 	if dead_by_timer:
@@ -73,6 +74,8 @@ radius = 87.4685
 "enemy",
 ]]
 z_index = 1
+collision_layer = 9
+collision_mask = 9
 script = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

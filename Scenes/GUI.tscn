@@ -30,46 +30,55 @@ func print_text( new_text, color ):
 [node name="GUi" type="CanvasLayer"]
 
 [node name="Hp" type="TextureProgress" parent="."]
-margin_left = 13.5088
-margin_top = 69.3248
-margin_right = 313.509
-margin_bottom = 107.325
+margin_left = 54.5967
+margin_top = 108.768
+margin_right = 354.597
+margin_bottom = 146.769
 value = 100.0
 texture_under = ExtResource( 1 )
 texture_progress = ExtResource( 2 )
 
 [node name="Energy" type="TextureProgress" parent="."]
-margin_left = 12.0976
-margin_top = 115.128
-margin_right = 312.098
-margin_bottom = 153.128
+margin_left = 51.258
+margin_top = 154.572
+margin_right = 351.258
+margin_bottom = 192.572
 value = 100.0
 texture_under = ExtResource( 1 )
 texture_progress = ExtResource( 2 )
 
+[node name="Fala" type="RichTextLabel" parent="."]
+margin_left = 10.0
+margin_top = 58.0
+margin_right = 442.0
+margin_bottom = 113.0
+rect_pivot_offset = Vector2( 114.975, 37.2798 )
+custom_fonts/normal_font = ExtResource( 3 )
+tab_size = 20
+
 [node name="Score" type="RichTextLabel" parent="."]
-margin_left = 16.1129
-margin_top = 9.18549
-margin_right = 311.113
-margin_bottom = 64.1855
+margin_left = 79.1129
+margin_top = 211.185
+margin_right = 374.113
+margin_bottom = 266.185
 rect_pivot_offset = Vector2( 114.975, 37.2798 )
 custom_fonts/normal_font = ExtResource( 3 )
 tab_size = 20
 
 [node name="Timer" type="RichTextLabel" parent="."]
-margin_left = 65.108
-margin_top = 175.0
-margin_right = 241.108
-margin_bottom = 230.0
+margin_left = 136.221
+margin_top = 3.13953
+margin_right = 312.221
+margin_bottom = 58.1395
 rect_pivot_offset = Vector2( 114.975, 37.2798 )
 custom_fonts/normal_font = ExtResource( 3 )
 tab_size = 20
 
 [node name="Advice" type="RichTextLabel" parent="."]
-margin_left = 349.0
-margin_top = 20.0
-margin_right = 1168.0
-margin_bottom = 174.0
+margin_left = 410.088
+margin_top = 16.742
+margin_right = 1229.09
+margin_bottom = 170.742
 custom_fonts/normal_font = ExtResource( 3 )
 tab_size = 20
 script = SubResource( 1 )
