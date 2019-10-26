@@ -38,10 +38,10 @@ func _process(delta):
 	if dead_by_timer:
 		timer += delta
 		if timer > LIFE_TIME:
-			call_deferred(\"queue_free\")
+			_on_dead()
 	else:
 		if get_parent().safe_faze:
-			call_deferred(\"queue_free\")
+			_on_dead()
 
 func chase():
 	cooldown = 0
@@ -53,11 +53,18 @@ func _on_Radar_body_entered(body):
 
 
 
+func _on_dead():
+	var v = load(\"res://Scenes/Rock.tscn\")
+	v = v.instance()
+	v.position = position
+	get_parent().call_deferred(\"add_child\", v)
+	call_deferred(\"queue_free\")
+
 func _on_Area2D_body_entered(body):
 	if body.is_in_group(\"player\"):
 		body.hp -= 15
 	if body.is_in_group(\"eatable\"):
-		call_deferred(\"queue_free\")
+		_on_dead()
 	pass # Replace with function body.
 "
 
