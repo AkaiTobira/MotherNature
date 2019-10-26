@@ -27,6 +27,7 @@ radius = 18.8578
 radius = 23.8319
 
 [node name="KinematicBody2D" type="KinematicBody2D" groups=[
+"misle",
 "enemy",
 ]]
 z_index = 1

@@ -1,11 +1,14 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Graphics/Backgourn3.png" type="Texture" id=2]
-[ext_resource path="res://Graphics/Backgourn4.png" type="Texture" id=3]
-[ext_resource path="res://Scenes/GUI.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Scenes/Rock.tscn" type="PackedScene" id=5]
-[ext_resource path="res://Scenes/Kapsel.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Graphics/Backgourn2.png" type="Texture" id=2]
+[ext_resource path="res://Graphics/Backgourn.png" type="Texture" id=3]
+[ext_resource path="res://Graphics/Backgourn3.png" type="Texture" id=4]
+[ext_resource path="res://Graphics/Backgourn5.png" type="Texture" id=5]
+[ext_resource path="res://Graphics/Backgourn4.png" type="Texture" id=6]
+[ext_resource path="res://Scenes/GUI.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scenes/Rock.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Scenes/Kapsel.tscn" type="PackedScene" id=9]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
@@ -57,9 +60,6 @@ func _process(delta):
 	if $Player.position.x > 3500 : $Player.position.x = 3500
 	if $Player.position.y > 2600 : $Player.position.y = 2600
 	
-	 
-	
-	
 	if safe_faze : handle_safe_faze()
 	else : handle_dangerous_faze()"
 
@@ -89,10 +89,10 @@ func _process(delta):
 		#$Backgourn5.modulate = Color(1, 1, 1, (100 - score)/100.0) 
 	elif player.score > third:
 		var score =  min( player.score - third, 100 )
-		#$Backgourn4.modulate = Color(1, 1, 1, (100 - score)/100.0) 
+		$Backgourn4.modulate = Color(1, 1, 1, (100 - score)/100.0) 
 	elif player.score > second:
 		var score =  min( player.score - second, 100 )
-		#$Backgourn3.modulate = Color(1, 1, 1, (100 - score)/100.0) 
+		$Backgourn3.modulate = Color(1, 1, 1, (100 - score)/100.0) 
 	elif player.score > first:
 		var score =  min( player.score - first, 100 )
 		$Backgourn2.modulate = Color(1, 1, 1, (100 - score)/100.0) 
@@ -124,7 +124,7 @@ var max_plastic       = 30
 onready var plastic_list = [load( \"res://Scenes/Plastic.tscn\" ),load( \"res://Scenes/Plastic4.tscn\" ),load( \"res://Scenes/Plastic3.tscn\" ),load( \"res://Scenes/Organic.tscn\" ), load( \"res://Scenes/Plastic2.tscn\" )]
 onready var enemy_list   = [load( \"res://Scenes/Enemy-Shooter.tscn\" ),load( \"res://Scenes/Enemy-Chaser.tscn\" ), load( \"res://Scenes/Enemy-Shooter2.tscn\" )] 
 onready var rock_list    = [load( \"res://Scenes/Rock.tscn\"  )]
-onready var oil_list     = [load( \"res://Scenes/Oil2.tscn\"  ),load( \"res://Scenes/Oil.tscn\"  )]
+onready var oil_list     = [load( \"res://Scenes/Oil.tscn\"  )]
 
 
 
@@ -199,33 +199,51 @@ position = Vector2( 789, 372 )
 position = Vector2( 862.669, 433.235 )
 script = SubResource( 2 )
 
-[node name="Backgourn2" type="Sprite" parent="Background_Swapper"]
+[node name="Backgourn5" type="Sprite" parent="Background_Swapper"]
 modulate = Color( 1, 1, 1, 0.654902 )
 position = Vector2( -127.93, 196.386 )
 scale = Vector2( 6.01638, 8.28446 )
 texture = ExtResource( 2 )
 
+[node name="Backgourn4" type="Sprite" parent="Background_Swapper"]
+modulate = Color( 1, 1, 1, 0.654902 )
+position = Vector2( -127.93, 196.386 )
+scale = Vector2( 6.01638, 8.28446 )
+texture = ExtResource( 3 )
+
+[node name="Backgourn3" type="Sprite" parent="Background_Swapper"]
+modulate = Color( 1, 1, 1, 0.654902 )
+position = Vector2( 354.549, 161.143 )
+scale = Vector2( 11.0523, 10.5082 )
+texture = ExtResource( 4 )
+
+[node name="Backgourn2" type="Sprite" parent="Background_Swapper"]
+modulate = Color( 1, 1, 1, 0.654902 )
+position = Vector2( -127.93, 196.386 )
+scale = Vector2( 6.01638, 8.28446 )
+texture = ExtResource( 5 )
+
 [node name="Backgourn" type="Sprite" parent="Background_Swapper"]
 position = Vector2( -114.684, 241.69 )
 scale = Vector2( 7.25838, 10.329 )
-texture = ExtResource( 3 )
+texture = ExtResource( 6 )
 
-[node name="GUI" parent="." instance=ExtResource( 4 )]
+[node name="GUI" parent="." instance=ExtResource( 7 )]
 
 [node name="Spawner" type="Node2D" parent="."]
 script = SubResource( 3 )
 
-[node name="Rock_Template3" parent="." instance=ExtResource( 5 )]
+[node name="Rock_Template3" parent="." instance=ExtResource( 8 )]
 position = Vector2( 3874.4, 1098.35 )
 rotation = 1.5708
 scale = Vector2( 30, 3.77 )
 
-[node name="Rock_Template4" parent="." instance=ExtResource( 5 )]
+[node name="Rock_Template4" parent="." instance=ExtResource( 8 )]
 position = Vector2( -2290.1, 1168.75 )
 rotation = 1.5708
 scale = Vector2( 30, 3.77 )
 
-[node name="Rock_Template2" parent="." instance=ExtResource( 5 )]
+[node name="Rock_Template2" parent="." instance=ExtResource( 8 )]
 position = Vector2( 676.503, 3220.23 )
 scale = Vector2( 30, 3.77 )
 
@@ -235,7 +253,7 @@ modulate = Color( 1, 0.0470588, 0.0196078, 0.282353 )
 position = Vector2( 752.534, 789.495 )
 scale = Vector2( 5.934, 8.33219 )
 z_index = 20
-texture = ExtResource( 2 )
+texture = ExtResource( 4 )
 
-[node name="Rock_Template" parent="." instance=ExtResource( 6 )]
+[node name="Rock_Template" parent="." instance=ExtResource( 9 )]
 position = Vector2( 597.686, 307.989 )
