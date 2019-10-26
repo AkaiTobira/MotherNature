@@ -18,6 +18,7 @@ func _on_Area2D_body_entered(body):
 		body.hp     += 2
 		body.energy += 10
 		body.score  += 1
+		body.play_animation_if_not_played(\"Eat\")
 		_on_delete()
 
 

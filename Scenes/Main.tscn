@@ -10,8 +10,8 @@
 script/source = "extends Node2D
 
 var timer                      = 0
-var TIME_TO_DANGEROUS_FAZE     = 10
-var TIME_TO_ENF_DANGEROUS_FAZE = 5
+var TIME_TO_DANGEROUS_FAZE     = 15
+var TIME_TO_ENF_DANGEROUS_FAZE = 15
 var safe_faze                  = true
 var number_of_faze             = 1
 
@@ -31,14 +31,14 @@ func handle_safe_faze():
 		safe_faze = false 
 		$Spawner.spawn_enemy( number_of_faze + 2)
 		number_of_faze         +=1
-		TIME_TO_DANGEROUS_FAZE += 10
+		TIME_TO_DANGEROUS_FAZE += 2
 		timer                   = 0
 
 func handle_dangerous_faze():
 	if timer > TIME_TO_ENF_DANGEROUS_FAZE:
 		$GUI/Advice.print_text(\"MICROBS AUTOFAGED THEMSELFS, STAY SAFE\", null)
 		safe_faze = true 
-		TIME_TO_ENF_DANGEROUS_FAZE += 4
+		TIME_TO_ENF_DANGEROUS_FAZE += 3
 		timer  = 0
 
 func _process(delta):
@@ -47,6 +47,7 @@ func _process(delta):
 	$GUI/Hp.value     = $Player.hp
 	$GUI/Energy.value = $Player.energy
 	$GUI/Timer.text   = time_to_string()
+	$GUI/Score.text   = \"SCORE: \" + str(int($Player.score))
 	
 	if safe_faze : handle_safe_faze()
 	else : handle_dangerous_faze()"
@@ -109,13 +110,20 @@ var max_distance      = 550
 var min_distance      = 200
 var number_of_plastic = 0
 var max_plastic       = 30
-onready var plastic_list = [load( \"res://Scenes/Plastic.tscn\" ),load( \"res://Scenes/Organic.tscn\" ), load( \"res://Scenes/Plastic2.tscn\" )]
-onready var enemy_list   = [load( \"res://Scenes/Enemy-Shooter.tscn\" )] 
+onready var plastic_list = [load( \"res://Scenes/Plastic.tscn\" ),load( \"res://Scenes/Plastic4.tscn\" ),load( \"res://Scenes/Plastic3.tscn\" ),load( \"res://Scenes/Organic.tscn\" ), load( \"res://Scenes/Plastic2.tscn\" )]
+onready var enemy_list   = [load( \"res://Scenes/Enemy-Shooter.tscn\" ),load( \"res://Scenes/Enemy-Chaser.tscn\" ), load( \"res://Scenes/Enemy-Shooter2.tscn\" )] 
 onready var rock_list    = [load( \"res://Scenes/Rock.tscn\"  )]
+
+
+
+func get_vector_around():
+	var x = ( randf() + 0.1 ) * (-1 if randi()%2 == 1 else 1 )
+	var y = ( randf() + 0.1 ) * (-1 if randi()%2 == 1 else 1 )
+	return Vector2( x, y )
 
 func spawn_rock():
 	for i in range(6):
-		var around           = Vector2( randf() - 1 + randf(), randf() - 1 + randf())
+		var around           = get_vector_around()
 		var distance         = randi()%1000 + 2000
 		var plastic_position = around * distance + player.position
 			
@@ -130,7 +138,8 @@ func spawn_plastic():
 	if number_of_plastic > max_plastic : return
 	time = 0
 	for i in range(2):
-		var around           = Vector2( randf() - 1 + randf(), randf() - 1 + randf())
+		var around           = get_vector_around()
+		
 		var distance         = randi()%max_distance + min_distance
 		var plastic_position = around * distance + player.position
 		
@@ -142,7 +151,7 @@ func spawn_plastic():
 
 func spawn_enemy(number_of_enemy):
 	for i in range( number_of_enemy ):
-		var around           = Vector2( randf() - 1 + randf(), randf() - 1 + randf())
+		var around           = get_vector_around()
 		var distance         = 900
 		var plastic_position = around * distance + player.position
 		

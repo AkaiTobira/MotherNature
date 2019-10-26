@@ -23,8 +23,8 @@ func _on_Area2D_body_entered(body):
 		body.hp     -= 3
 		body.energy -= 5
 		body.score  -= 1
+		body.play_animation_if_not_played(\"Eat\")
 		_on_delete()
-
 
 func _on_delete():
 	get_parent().get_node(\"Spawner\").number_of_plastic -= 1
