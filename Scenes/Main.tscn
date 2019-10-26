@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Graphics/Backgourn2.png" type="Texture" id=2]
+[ext_resource path="res://Graphics/Backgourn3.png" type="Texture" id=2]
 [ext_resource path="res://Graphics/Backgourn.png" type="Texture" id=3]
 [ext_resource path="res://Scenes/GUI.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Scenes/Rock.tscn" type="PackedScene" id=5]
@@ -48,11 +48,12 @@ func _process(delta):
 	$GUI/Energy.value = $Player.energy
 	$GUI/Timer.text   = time_to_string()
 	$GUI/Score.text   = \"SCORE: \" + str(int($Player.score))
+	$DangerWorld.visible = not safe_faze
 	
 	if safe_faze : handle_safe_faze()
 	else : handle_dangerous_faze()"
 
-[sub_resource type="GDScript" id=3]
+[sub_resource type="GDScript" id=2]
 script/source = "extends Node2D
 
 # Declare member variables here. Examples:
@@ -95,7 +96,7 @@ func _process(delta):
 #	pass
 "
 
-[sub_resource type="GDScript" id=2]
+[sub_resource type="GDScript" id=3]
 script/source = "extends Node2D
 
 onready var player = get_parent().get_node(\"Player\")
@@ -175,11 +176,12 @@ z_index = 1
 
 [node name="Background_Swapper" type="Node2D" parent="."]
 position = Vector2( 862.669, 433.235 )
-script = SubResource( 3 )
+script = SubResource( 2 )
 
 [node name="Backgourn2" type="Sprite" parent="Background_Swapper"]
-position = Vector2( -128.515, 24.4015 )
-scale = Vector2( 1.73035, 2.07548 )
+modulate = Color( 0.909804, 0.0470588, 0.0196078, 0.137255 )
+position = Vector2( -127.93, 98.754 )
+scale = Vector2( 3.49068, 5.03205 )
 texture = ExtResource( 2 )
 
 [node name="Backgourn" type="Sprite" parent="Background_Swapper"]
@@ -190,7 +192,14 @@ texture = ExtResource( 3 )
 [node name="GUI" parent="." instance=ExtResource( 4 )]
 
 [node name="Spawner" type="Node2D" parent="."]
-script = SubResource( 2 )
+script = SubResource( 3 )
 
 [node name="Rock_Template" parent="." instance=ExtResource( 5 )]
 position = Vector2( 653.206, 349.13 )
+
+[node name="DangerWorld" type="Sprite" parent="."]
+modulate = Color( 1, 0.0470588, 0.0196078, 0.282353 )
+position = Vector2( 734.74, 531.989 )
+scale = Vector2( 3.49068, 5.03205 )
+z_index = 20
+texture = ExtResource( 2 )
