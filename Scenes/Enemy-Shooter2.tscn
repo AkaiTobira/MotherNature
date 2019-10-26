@@ -65,6 +65,7 @@ radius = 47.2831
 [node name="EnemyTemplate" type="KinematicBody2D" groups=[
 "enemy",
 ]]
+z_index = 1
 script = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

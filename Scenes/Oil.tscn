@@ -1,10 +1,42 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Graphics/Oil.png" type="Texture" id=1]
 
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+
+var timer    = 0
+var finisher = 9
+
+var wait = 6
+
+func _process(delta):
+	$Oil.scale += Vector2(1,1) * delta 
+	if $Oil.scale.x > 1: 
+		timer += delta
+		$Oil.scale    = Vector2(1,1)
+		if timer < wait : return
+		var alpha_scale = max( 1.0 - (timer/finisher), 0 ) 
+		$Oil.modulate = Color( 1,1,1, alpha_scale )
+		if alpha_scale == 0: call_deferred(\"queue_free\")
+	"
+
 [node name="Node2D" type="Node2D"]
+script = SubResource( 1 )
 
 [node name="Oil" type="Sprite" parent="."]
-position = Vector2( 5.63513, 12.1294 )
-scale = Vector2( 0.174247, 0.19875 )
+position = Vector2( 0.296755, -0.251169 )
+scale = Vector2( 0.01, 0.01 )
 texture = ExtResource( 1 )

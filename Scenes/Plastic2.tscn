@@ -17,7 +17,7 @@ func _on_Area2D_body_entered(body):
 	if body.is_in_group(\"player\"):
 		body.hp     += 2
 		body.energy += 10
-		body.score  += 1
+		body.score  += 3
 		body.play_animation_if_not_played(\"Eat\")
 		_on_delete()
 
@@ -35,6 +35,7 @@ radius = 20.2443
 
 [node name="Plastic_Template" type="KinematicBody2D"]
 position = Vector2( -2.31964, 6.03108 )
+z_index = 1
 script = SubResource( 1 )
 
 [node name="plastic" type="Sprite" parent="."]

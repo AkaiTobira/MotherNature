@@ -34,6 +34,7 @@ radius = 12.5516
 radius = 20.7172
 
 [node name="Plastic_Template" type="KinematicBody2D"]
+z_index = 1
 script = SubResource( 1 )
 
 [node name="plastic" type="Sprite" parent="."]
