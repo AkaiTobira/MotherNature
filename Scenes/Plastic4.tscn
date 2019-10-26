@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://Graphics/plastiki/pl_01.png" type="Texture" id=1]
+[ext_resource path="res://Graphics/plastiki/pl_04.png" type="Texture" id=1]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends KinematicBody2D
@@ -15,8 +15,8 @@ func _process(delta):
 
 func _on_Area2D_body_entered(body):
 	if body.is_in_group(\"player\"):
-		body.hp     += 10
-		body.energy += 1
+		body.hp     -= 5
+		body.energy += 15
 		body.score  += 1
 		body.play_animation_if_not_played(\"Eat\")
 		_on_delete()

@@ -27,6 +27,7 @@ radius = 84.8013
 radius = 168.307
 
 [node name="Rock_Template" type="StaticBody2D"]
+z_index = 1
 script = SubResource( 1 )
 
 [node name="plastic" type="Sprite" parent="."]
