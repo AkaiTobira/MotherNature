@@ -5,7 +5,7 @@
 [ext_resource path="res://Graphics/Backgourn.png" type="Texture" id=3]
 [ext_resource path="res://Graphics/Backgourn3.png" type="Texture" id=4]
 [ext_resource path="res://Graphics/Backgourn5.png" type="Texture" id=5]
-[ext_resource path="res://Graphics/Backgourn4.png" type="Texture" id=6]
+[ext_resource path="res://Graphics/Backgourn9.png" type="Texture" id=6]
 [ext_resource path="res://Scenes/GUI.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Graphics/Backgourn6.png" type="Texture" id=8]
 [ext_resource path="res://Graphics/tlo/Bez nazwy.png" type="Texture" id=9]
@@ -221,7 +221,6 @@ script = SubResource( 1 )
 position = Vector2( 789, 372 )
 
 [node name="Background_Swapper" type="Node2D" parent="."]
-editor/display_folded = true
 position = Vector2( 862.669, 433.235 )
 script = SubResource( 2 )
 
@@ -250,8 +249,8 @@ scale = Vector2( 6.01638, 8.28446 )
 texture = ExtResource( 5 )
 
 [node name="Backgourn" type="Sprite" parent="Background_Swapper"]
-position = Vector2( -224.126, 36.4852 )
-scale = Vector2( 4.98535, 6.27667 )
+position = Vector2( -343.51, 101.604 )
+scale = Vector2( 10.7975, 15.4676 )
 texture = ExtResource( 6 )
 
 [node name="GUI" parent="." instance=ExtResource( 7 )]

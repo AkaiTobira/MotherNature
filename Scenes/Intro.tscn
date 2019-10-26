@@ -38,7 +38,7 @@ func _ready():
 	pass # Replace with function body.
 
 var timer          = 0.0
-var timer_rest     = 2.5
+var timer_rest     = 1.75
 var children_index = 1
 var increase_flag = true
 

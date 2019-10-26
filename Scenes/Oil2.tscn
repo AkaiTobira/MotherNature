@@ -39,10 +39,6 @@ func _process(delta):
 		body.speed = 10
 
 func _on_Area2D_body_entered(body):
-#	if body.is_in_group(\"player\") or body.is_in_group(\"enemy\"):
-#		l.append(body)
-	
-	
 	pass # Replace with function body.
 "
 

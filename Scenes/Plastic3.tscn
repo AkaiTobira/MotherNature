@@ -7,11 +7,7 @@ script/source = "extends KinematicBody2D
 
 onready var player = get_parent().get_node(\"Player\")
 
-func _ready():
-	pass # Replace with function body.
-
 func _process(delta): pass
-	#if position.distance_to( player.position ) > 2000: _on_delete()
 
 func _on_Area2D_body_entered(body):
 	if body.is_in_group(\"player\"):
@@ -21,13 +17,10 @@ func _on_Area2D_body_entered(body):
 		body.play_animation_if_not_played(\"Eat\")
 		_on_delete()
 
-
 func _on_delete():
 	var v = load( \"res://Scenes/Buuble.tscn\" ).instance()
 	v.position = position
 	get_parent().add_child( v )
-	
-	
 	get_parent().get_node(\"Spawner\").number_of_plastic -= 1
 	call_deferred(\"queue_free\")
 "

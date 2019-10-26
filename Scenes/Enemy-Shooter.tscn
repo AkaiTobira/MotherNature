@@ -44,12 +44,9 @@ func shoot():
 		get_parent().call_deferred(\"add_child\", instance)
 
 func _on_Radar_body_entered(body):
-	print( body )
 	if body.is_in_group(\"player\"):
 		shoot()
 		$AnimationPlayer.play(\"Dead\")
-
-
 
 func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == \"Dead\":
