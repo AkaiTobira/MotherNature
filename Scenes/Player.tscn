@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://Graphics/player/p_01.png" type="Texture" id=1]
+[ext_resource path="res://Graphics/player/Player.png" type="Texture" id=1]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends KinematicBody2D
@@ -10,21 +10,18 @@ var hp     = 100.0
 var score  = 0
 
 var direction    = Vector2(0,0)
-
 var target_point = position
-var speed         = 0
-var speed_incease = 25
+
+var move_speed    = 0
+var speed_incease = 33
 var speed_max     = 150
 
 var boost_bonus = 0
-var boost_cost  = 25
-var boost_max   = 350
-
-func _ready():
-	pass # Replace with function body.
+var boost_cost  = 33
+var boost_max   = 325
 
 func update_hp(delta):
-	if get_parent().safe_faze: hp -= 2.75 * delta 
+	if get_parent().is_safe_faze: hp -= 2.75 * delta 
 	energy += 0.5*delta
 	energy = min( energy, 100 )
 	hp     = min( hp,     100 )
@@ -32,50 +29,59 @@ func update_hp(delta):
 func _process(delta):
 	update_hp(delta)
 
-func _input(event):
-	if(Input.is_mouse_button_pressed(BUTTON_LEFT) and not boost_bonus):
-		target_point = get_viewport().get_mouse_position()
-		var origin_position = get_global_transform_with_canvas().origin
-		direction = (target_point  - origin_position).normalized()
+func handle_left_mouse_button(delta):
+	if not Input.is_mouse_button_pressed(BUTTON_LEFT): 
+		move_speed = max( move_speed - 2*speed_incease*delta, 0 )
+		return 
+	if(boost_bonus): return
 	
-	if(Input.is_mouse_button_pressed(BUTTON_RIGHT) and not boost_bonus):
-		if energy < boost_cost: return
-		
-		target_point = get_viewport().get_mouse_position()
-		energy    -=  boost_cost 
-		
-		speed       = speed_max
-		boost_bonus = boost_max
-		var origin_position = get_global_transform_with_canvas().origin
-		direction = (target_point  - origin_position).normalized()
-		play_animation_if_not_played(\"Boost\")
+	move_speed = min( speed_incease*delta + move_speed, speed_max)
+	calculate_direction()
 
-func move_character(delta):
+func handle_right_mouse_button(delta):
 	boost_bonus = max( boost_bonus- speed_max*delta, 0 )
+	if not Input.is_mouse_button_pressed(BUTTON_RIGHT): return 
+	if(boost_bonus): return
+	if energy < boost_cost: return
+
+	energy     -=  boost_cost 
+	move_speed  = speed_max
+	boost_bonus = boost_max
+
+	calculate_direction()	
+	play_animation_if_not_played(\"Boost\")
+ 
+func calculate_direction():
+	target_point = get_viewport().get_mouse_position()
+	var origin_position = get_global_transform_with_canvas().origin
+	direction = (target_point  - origin_position).normalized()
 	
-	if(Input.is_mouse_button_pressed(BUTTON_LEFT) and not boost_bonus):
-		speed = min( speed_incease*delta + speed, speed_max)
-	else: speed = max( speed - 2*speed_incease*delta, 0 ) 
-	var velocity =  direction * ( speed + boost_bonus )
+func process_input(delta):
+	handle_left_mouse_button(delta)
+	handle_right_mouse_button(delta)
+	handle_cheat()
 	
+func handle_cheat():
 	if( Input.is_action_just_pressed(\"ui_focus_prev\") ): 
 		energy = 100
 		hp     = 100
 		score  += 50
+
+func move_with_boost(velocity):
+	position    += velocity
+	target_point = get_global_transform_with_canvas().origin
 	
-	if boost_bonus:
-		position += delta *velocity
-		target_point = get_global_transform_with_canvas().origin
-		return
-	move_and_slide(velocity)
+func move_character(delta):
+	process_input(delta)
+	
+	var velocity =  direction * ( move_speed + boost_bonus )
+	if boost_bonus: move_with_boost( velocity * delta )
+	else: move_and_slide(velocity)
 
 func rotate_character(delta):
-	
 	var angle      = get_global_transform_with_canvas().origin.angle_to_point(target_point)
 	var angle_diff = ( angle - deg2rad($Player.rotation_degrees) ) * delta
-	#print( angle_diff) 
-	$Player.rotation_degrees = rad2deg(angle)#$Player.rotation_degrees + rad2deg(angle_diff)
-	#print( angle )
+	$Player.rotation_degrees = rad2deg(angle)
 
 func _physics_process(delta):
 	move_character(delta)
@@ -87,7 +93,6 @@ func play_animation_if_not_played(anim_name):
 
 func _on_AnimationPlayer_animation_finished(anim_name):
 	play_animation_if_not_played(\"Idle\")
-	pass # Replace with function body.
 "
 
 [sub_resource type="CircleShape2D" id=2]

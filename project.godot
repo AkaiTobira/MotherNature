@@ -19,6 +19,14 @@ config/name="Who Knows"
 run/main_scene="res://Scenes/Intro.tscn"
 config/icon="res://icon.png"
 
+[debug]
+
+gdscript/warnings/unassigned_variable=false
+gdscript/warnings/unused_variable=false
+gdscript/warnings/unused_class_variable=false
+gdscript/warnings/unused_argument=false
+gdscript/warnings/unused_signal=false
+
 [display]
 
 window/size/fullscreen=true

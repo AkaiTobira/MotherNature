@@ -1,49 +1,47 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://Graphics/Oil.png" type="Texture" id=1]
+[ext_resource path="res://Graphics/Enviroment/Efects/Oil1.png" type="Texture" id=1]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = \"text\"
+var timer         = 0
+var FADING_TIME   = 9
+var EXISTING_TIME = 6
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+var slowed_objects = []
+var max_scale      = Vector2(1,1)
+var is_big         = false
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
-var timer    = 0
-var finisher = 9
-
-var wait = 6
-
-var l = []
+func increase_scale(delta):
+	if is_big : return
+	if $Oil.scale.x  < max_scale.x:
+		$Oil.scale += Vector2(1,1) * delta
+	else: 
+		is_big = true
+		$Oil.scale = max_scale
 
 func _process(delta):
-	$Oil.scale += Vector2(1,1) * delta
-	if $Oil.scale.x > 1:
-		timer += delta
-		$Oil.scale    = Vector2(1,1)
-		if timer < wait : return
-		var alpha_scale = max( 1.0 - (timer/finisher), 0 )
-		$Oil.modulate = Color( 1,1,1, alpha_scale )
-		if alpha_scale == 0: call_deferred(\"queue_free\")
-	for body in l:
-		if not body[1]: body[0].speed = 10
+	increase_scale(delta)
+	reduce_speed()
+	if is_big: timer += delta
+	if timer < EXISTING_TIME : return
+	progress_disappear()
+
+func progress_disappear():
+	var alpha_scale = max( 1.0 - (timer - EXISTING_TIME)/(FADING_TIME-EXISTING_TIME), 0 )
+	$Oil.modulate = Color( 1,1,1, alpha_scale )
+	if alpha_scale == 0: call_deferred(\"queue_free\")
+
+func reduce_speed():
+	for body in slowed_objects:
+		if not body[1]: body[0].move_speed = 10
 		body[1] = true
 
 func _on_Area2D_body_entered(body):
 	if body.is_in_group(\"player\") or body.is_in_group(\"enemy\"):
 		if not body.is_in_group(\"misle\"):
-			l.append([ body, false ])
-
-
-	pass # Replace with function body.
+			slowed_objects.append([ body, false ])
 "
 
 [sub_resource type="CircleShape2D" id=2]

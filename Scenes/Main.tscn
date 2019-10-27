@@ -1,108 +1,112 @@
 [gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Graphics/Backgourn2.png" type="Texture" id=2]
-[ext_resource path="res://Graphics/Backgourn.png" type="Texture" id=3]
-[ext_resource path="res://Graphics/Backgourn3.png" type="Texture" id=4]
-[ext_resource path="res://Graphics/Backgourn5.png" type="Texture" id=5]
-[ext_resource path="res://Graphics/Backgourn9.png" type="Texture" id=6]
+[ext_resource path="res://Graphics/Background/Backgourn2.png" type="Texture" id=2]
+[ext_resource path="res://Graphics/Background/Backgourn1.png" type="Texture" id=3]
+[ext_resource path="res://Graphics/Background/Backgourn3.png" type="Texture" id=4]
+[ext_resource path="res://Graphics/Background/Backgourn5.png" type="Texture" id=5]
+[ext_resource path="res://Graphics/Background/Backgourn9.png" type="Texture" id=6]
 [ext_resource path="res://Scenes/GUI.tscn" type="PackedScene" id=7]
-[ext_resource path="res://Graphics/Backgourn6.png" type="Texture" id=8]
-[ext_resource path="res://Graphics/tlo/Bez nazwy.png" type="Texture" id=9]
+[ext_resource path="res://Graphics/Intro/GameOVer.png" type="Texture" id=8]
+[ext_resource path="res://Graphics/Intro/WinScreen.png" type="Texture" id=9]
 [ext_resource path="res://Scenes/Rock.tscn" type="PackedScene" id=10]
-[ext_resource path="res://Scenes/Rock_experimental.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Scenes/BigRock.tscn" type="PackedScene" id=11]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
 
 var timer                      = 0
 var TIME_TO_DANGEROUS_FAZE     = 15
-var TIME_TO_ENF_DANGEROUS_FAZE = 15
-var safe_faze                  = true
+var TIME_TO_SAFE_FAZE          = 15
+var is_safe_faze                = true
 var number_of_faze             = 1
 
-func _ready():
-	pass # Replace with function body.
-
-func time_to_string():
-	if safe_faze :
-		return str( int((TIME_TO_DANGEROUS_FAZE - timer)/60) ) + \":\" + str(int((TIME_TO_DANGEROUS_FAZE-timer))%60)
-	else :
-		return str( int((TIME_TO_ENF_DANGEROUS_FAZE - timer)/60) ) + \":\" + str(int((TIME_TO_ENF_DANGEROUS_FAZE-timer))%60)
+func str_left_time( faze_over ):
+	var output = \"\"
+	var minutes = int( (faze_over - timer)/60 )
+	output  = str(minutes) if minutes > 9 else \"0\" + str(minutes)
+	output += \":\"
+	var seconds = int( (faze_over - timer))%60
+	output += str(seconds) if seconds > 9 else \"0\" + str(seconds)
+	return output
 
 func handle_safe_faze():
+	process_to_dangerous_faze()
 
-	if timer > TIME_TO_DANGEROUS_FAZE:
-		$GUI/Advice.print_text(\"LOOK OUT !!! TOXIC PLASTIC MICROBES HAS BEEN APPEARED\", null)
-		safe_faze = false 
-		spawn_second_time = true
-		$Spawner.spawn_enemy( number_of_faze * 4)
-		$Spawner.spawn_oil()
-		number_of_faze         += 1
-		TIME_TO_DANGEROUS_FAZE += 2
-		timer                   = 0
+func process_to_dangerous_faze():
+	if timer < TIME_TO_DANGEROUS_FAZE: return
+	$GUI/Advice.print_text(\"LOOK OUT !!! TOXIC PLASTIC MICROBES HAS BEEN APPEARED\", null)
+	is_safe_faze     = false 
+	$Spawner.spawn_enemy( number_of_faze * 4)
+	$Spawner.spawn_oil()
+	number_of_faze         += 1
+	TIME_TO_DANGEROUS_FAZE += 2
+	timer                   = 0
 
 var spawn_second_time = true
-func handle_dangerous_faze():
-	
-	if timer > TIME_TO_DANGEROUS_FAZE/2 and spawn_second_time:
-		spawn_second_time = false
-		$Spawner.spawn_enemy( number_of_faze * 2)
-	
-	
-	if timer > TIME_TO_ENF_DANGEROUS_FAZE:
-		$GUI/Advice.print_text(\"MICROBES AUTOFAGED THEMSELFS, KEEP IT UP\", null)
-		safe_faze = true 
-		TIME_TO_ENF_DANGEROUS_FAZE += 3
-		timer  = 0
+func spawn_second_part_of_wave():
+	if not spawn_second_time: return
+	if timer < TIME_TO_DANGEROUS_FAZE/2 : return
+	spawn_second_time = false
+	$Spawner.spawn_enemy( number_of_faze * 2)
 
-var end_value = 0
-func _process(delta):
-	timer += delta
-	
-	$GUI/Hp.value     = $Player.hp
-	$GUI/Energy.value = $Player.energy
-	$GUI/Timer.text   =  \"Time left : \" + time_to_string()
-	$GUI/Score.text   = \"SCORE: \" + str(int($Player.score))
-	$GUI/Fala.text    = \"Prepare to next wave\" if safe_faze else \"WAVE \" + str( number_of_faze )
-	$DangerWorld.visible = not safe_faze
-	
+func process_to_safe_faze():
+	if timer < TIME_TO_SAFE_FAZE: return
+	$GUI/Advice.print_text(\"MICROBES AUTOFAGED THEMSELFS, KEEP IT UP\", null)
+	spawn_second_time = true
+	is_safe_faze      = true 
+	TIME_TO_SAFE_FAZE += 3
+	timer  = 0
+
+func handle_dangerous_faze():
+	spawn_second_part_of_wave()
+	process_to_safe_faze()
+		
+func update_hud():
+	$GUI/Hp.value        = $Player.hp
+	$GUI/Energy.value    = $Player.energy
+	$GUI/Timer.text      =  \"Time left : \" + str_left_time( TIME_TO_DANGEROUS_FAZE if is_safe_faze else TIME_TO_SAFE_FAZE )
+	$GUI/Score.text      = \"SCORE: \" + str(int($Player.score))
+	$GUI/Fala.text       = \"Prepare to next wave\" if is_safe_faze else \"WAVE \" + str( number_of_faze )
+	$DangerWorld.visible = not is_safe_faze
+
+func fix_player_in_world():
 	if $Player.position.x < -1660 : $Player.position.x = -1660
-	if $Player.position.x > 3290 : $Player.position.x = 3290
-	if $Player.position.y > 2600 : $Player.position.y = 2600
+	if $Player.position.x > 3290  : $Player.position.x =  3290
+	if $Player.position.y > 2600  : $Player.position.y =  2600
 	if $Player.position.y < -1660 : $Player.position.y = -1660
 	
-	if $Player.score > 1000:
-		if Input.is_action_just_released(\"ui_accept\"): 
-			get_tree().change_scene(\"res://Scenes/Intro.tscn\")
-		end_value = min( end_value + delta, 1 )
-		$Player.hp    = 100
-		$Player.speed = 0
-		$GUI/Backgourn7.modulate = Color( 1,1,1, end_value  )
-	
-	
-	if $Player.hp <= 0: 
-		if Input.is_action_just_released(\"ui_accept\"): 
-			get_tree().change_scene(\"res://Scenes/Intro.tscn\")
-		end_value = min( end_value + delta, 1 )
-		$Player.speed = 0
-		$GUI/Backgourn6.modulate = Color( 1,1,1, end_value  )
-	
+func handle_conditions_game_over(delta):
+	if $Player.hp > 0: return 
+	if Input.is_action_just_released(\"ui_accept\"): 
+		get_tree().change_scene(\"res://Scenes/Intro.tscn\")
+	var scale                = min( $GUI/Backgourn6.modulate.a + delta, 1 )
+	$Player.move_speed       = 0
+	$GUI/Backgourn6.modulate = Color( 1,1,1, scale  )
 
-	if safe_faze : handle_safe_faze()
+func handle_conditions_win(delta): 
+	if $Player.score < 1000: return
+	if Input.is_action_just_released(\"ui_accept\"): 
+		get_tree().change_scene(\"res://Scenes/Intro.tscn\")
+	var scale                = min( $GUI/Backgourn7.modulate.a + delta, 1 )
+	$Player.hp               = 100
+	$Player.move_speed       = 0
+	$GUI/Backgourn7.modulate = Color( 1,1,1, scale  )
+
+func _process(delta):
+	timer += delta
+	update_hud()
+	fix_player_in_world()
+	handle_conditions_game_over(delta)
+	handle_conditions_win(delta)
+	
+	if is_safe_faze : handle_safe_faze()
 	else : handle_dangerous_faze()"
 
 [sub_resource type="GDScript" id=2]
 script/source = "extends Node2D
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = \"text\"
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
+	
 onready var player = get_parent().get_node(\"Player\")
 
 var first  = 250
@@ -110,25 +114,21 @@ var second = 450
 var third  = 650
 var fourth = 850
 
+var tresholds     = [0, 250, 450, 650, 850, 1000, 1500 ]
+var current_index = 1
+var child
+
+func _ready():
+	child = get_children()[ get_child_count() -1]
 
 func _process(delta):
-	
-	if player.score > fourth:
-		var score =  min( player.score - fourth, 100 )
-		#$Backgourn5.modulate = Color(1, 1, 1, (100 - score)/100.0) 
-	elif player.score > third:
-		var score =  min( player.score - third, 100 )
-		$Backgourn4.modulate = Color(1, 1, 1, (100 - score)/100.0) 
-	elif player.score > second:
-		var score =  min( player.score - second, 100 )
-		$Backgourn3.modulate = Color(1, 1, 1, (100 - score)/100.0) 
-	elif player.score > first:
-		var score =  min( player.score - first, 100 )
-		$Backgourn2.modulate = Color(1, 1, 1, (100 - score)/100.0) 
-	else:
-		var score =  min( player.score, 100 )
-		$Backgourn.modulate = Color(1, 1, 1, (100 - score)/100.0) 
-"
+	if player.score > tresholds[current_index] :
+		current_index += 1
+		child = get_children()[ get_child_count() - current_index]	 
+	var points        = player.score             - tresholds[current_index-1]
+	var points_needed = tresholds[current_index] - tresholds[current_index-1]
+	child.modulate = Color(1,1,1, 1.0 - float(points)/float(points_needed) )
+	"
 
 [sub_resource type="GDScript" id=3]
 script/source = "extends Node2D
@@ -137,17 +137,13 @@ onready var player = get_parent().get_node(\"Player\")
 
 func _ready():
 	spawn_rock()
-	#spawn_plastic()
-	pass # Replace with function body.
 	
 var time              = 0
 var time_to_spawn     = 2
-var max_distance      = 1000
-var min_distance      = 400
 var number_of_plastic = 0
 var max_plastic       = 500
 onready var plastic_list = [load( \"res://Scenes/Plastic.tscn\" ),load( \"res://Scenes/Plastic4.tscn\" ),load( \"res://Scenes/Plastic3.tscn\" ),load( \"res://Scenes/Organic.tscn\" ), load( \"res://Scenes/Plastic2.tscn\" )]
-onready var enemy_list   = [load( \"res://Scenes/Enemy-Shooter.tscn\" ),load( \"res://Scenes/Enemy-Chaser.tscn\" ), load( \"res://Scenes/Enemy-Shooter2.tscn\" )] 
+onready var enemy_list   = [load( \"res://Scenes/Enemy-Shooter.tscn\" ),load( \"res://Scenes/Enemy-Spinner.tscn\" ), load( \"res://Scenes/Enemy-Shooter2.tscn\" )] 
 onready var rock_list    = [load( \"res://Scenes/Rock.tscn\"  )]
 onready var oil_list     = [load( \"res://Scenes/Oil.tscn\"  )]
 
@@ -158,55 +154,32 @@ func get_vector_around():
 	var y = ( randf() + 0.1 ) * (-1 if randi()%2 == 1 else 1 )
 	return Vector2( x, y )
 
-
 func spawn_oil():
 	for i in range(10):
-		var around           = get_vector_around()
-		var distance         = randi()%1000 + 300
-		var plastic_position = around * distance + player.position
-			
-		var plastic      = oil_list[ randi()%len(oil_list) ]
-		plastic          = plastic.instance()
-		plastic.position = plastic_position
-		get_parent().call_deferred(\"add_child\", plastic)
+		set_object( 300, 1000, oil_list[ randi()%len(oil_list) ] )
 
 func spawn_rock():
 	for i in range(200):
-		var around           = get_vector_around()
-		var distance         = randi()%1000 + 1500
-		var plastic_position = around * distance + player.position
-			
-		var plastic      = rock_list[ randi()%len(rock_list) ]
-		plastic          = plastic.instance()
-		plastic.position = plastic_position
-		get_parent().call_deferred(\"add_child\", plastic)
+		set_object( 1000, 1300, rock_list[ randi()%len(rock_list) ] )
 
 func spawn_plastic():
 	if time < time_to_spawn : return
 	if number_of_plastic > max_plastic : return
 	time = 0
 	for i in range(6):
-		var around           = get_vector_around()
-		
-		var distance         = randi()%max_distance + min_distance
-		var plastic_position = around * distance + player.position
-		
-		var plastic      = plastic_list[ randi()%len(plastic_list) ]
-		plastic          = plastic.instance()
-		plastic.position = plastic_position
-		get_parent().add_child(plastic)
+		set_object( 400, 1000, plastic_list[ randi()%len(plastic_list) ] )
 		number_of_plastic += 1
 
 func spawn_enemy(number_of_enemy):
 	for i in range( number_of_enemy ):
+		set_object( 900, 1, enemy_list[ randi()%len(enemy_list) ] )
+
+func set_object( min_distance, max_distance, object ):
 		var around           = get_vector_around()
-		var distance         = 900
-		var plastic_position = around * distance + player.position
-		
-		var plastic      = enemy_list[ randi()%len(enemy_list) ]
-		plastic          = plastic.instance()
-		plastic.position = plastic_position
-		get_parent().add_child(plastic)
+		var distance         = randi()%max_distance + min_distance
+		var instance         = object.instance()
+		instance.position      = around * distance + player.position
+		get_parent().call_deferred(\"add_child\", instance)
 
 func _process(delta):
 	time += delta
@@ -224,31 +197,37 @@ position = Vector2( 789, 372 )
 position = Vector2( 862.669, 433.235 )
 script = SubResource( 2 )
 
-[node name="Backgourn5" type="Sprite" parent="Background_Swapper"]
+[node name="6" type="Sprite" parent="Background_Swapper"]
 modulate = Color( 1, 1, 1, 0.654902 )
 position = Vector2( -127.93, 196.386 )
 scale = Vector2( 6.01638, 8.28446 )
 texture = ExtResource( 2 )
 
-[node name="Backgourn4" type="Sprite" parent="Background_Swapper"]
+[node name="5" type="Sprite" parent="Background_Swapper"]
+modulate = Color( 1, 1, 1, 0.654902 )
+position = Vector2( -127.93, 196.386 )
+scale = Vector2( 6.01638, 8.28446 )
+texture = ExtResource( 2 )
+
+[node name="4" type="Sprite" parent="Background_Swapper"]
 modulate = Color( 1, 1, 1, 0.654902 )
 position = Vector2( -127.93, 196.386 )
 scale = Vector2( 6.01638, 8.28446 )
 texture = ExtResource( 3 )
 
-[node name="Backgourn3" type="Sprite" parent="Background_Swapper"]
+[node name="3" type="Sprite" parent="Background_Swapper"]
 modulate = Color( 1, 1, 1, 0.654902 )
 position = Vector2( 354.549, 161.143 )
 scale = Vector2( 11.0523, 10.5082 )
 texture = ExtResource( 4 )
 
-[node name="Backgourn2" type="Sprite" parent="Background_Swapper"]
+[node name="2" type="Sprite" parent="Background_Swapper"]
 modulate = Color( 1, 1, 1, 0.654902 )
 position = Vector2( -127.93, 196.386 )
 scale = Vector2( 6.01638, 8.28446 )
 texture = ExtResource( 5 )
 
-[node name="Backgourn" type="Sprite" parent="Background_Swapper"]
+[node name="1" type="Sprite" parent="Background_Swapper"]
 position = Vector2( -343.51, 101.604 )
 scale = Vector2( 10.7975, 15.4676 )
 texture = ExtResource( 6 )
