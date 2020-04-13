@@ -13,7 +13,7 @@ Game created during Rzeszów Game Jam 2019
 
 ## General info
 
-PlasticEater was created during 24h GameJam and my first gamejame game ever. 
+PlasticEater was created during 24h and is my first  game created during GameJam. 
 The topics of the Jam were "Save Mother Nature", "Simulation" and "Time Control".
 It is also first game that I made from begin to end and marked as closed.
 Project was inspired by "Spore" Game ( one phase of it ). 
