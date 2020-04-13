@@ -1,6 +1,6 @@
-# PlasticEater - platformer game
+# PlasticEater - simulation/survival game
 
-DesRepair is platformer game, created in GNative Script in Godot Engine.
+PlasticEater is simulation and survival game, created in GNative Script in Godot Engine.
 Game created during Rzeszów Game Jam 2019
 * Game is published on itch.io : https://tempacount.itch.io/plasticeater
 
