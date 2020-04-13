@@ -42,6 +42,9 @@ func process_to_dangerous_faze():
 	number_of_faze         += 1
 	TIME_TO_DANGEROUS_FAZE += 2
 	timer                   = 0
+	
+func close_game():
+	if Input.is_action_just_pressed(\"ui_escape\"): get_tree().quit()
 
 var spawn_second_time = true
 func spawn_second_part_of_wave():
@@ -101,7 +104,10 @@ func _process(delta):
 	handle_conditions_win(delta)
 	
 	if is_safe_faze : handle_safe_faze()
-	else : handle_dangerous_faze()"
+	else : handle_dangerous_faze()
+	
+	close_game()
+"
 
 [sub_resource type="GDScript" id=2]
 script/source = "extends Node2D
