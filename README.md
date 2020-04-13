@@ -2,7 +2,7 @@
 
 DesRepair is platformer game, created in GNative Script in Godot Engine.
 Game created during Rzeszów Game Jam 2019
-* Game is published on itch.io : 
+* Game is published on itch.io : https://tempacount.itch.io/plasticeater
 
 ## Table of Contents
 * [General info](#general-info)
